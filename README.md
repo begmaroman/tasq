@@ -23,7 +23,7 @@ You can use **TasQ** if your application requires some background operations. If
 
 For example, there are HTTP server which requires doing some logic (send mail, exec DB queries etc.) after handling of HTTP request. In this case you may use **TasQ**.
 
-## Benchmarking
+## Benchmarks:
 
 **pkg: github.com/begmaroman/tasq**
 
