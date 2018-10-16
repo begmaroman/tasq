@@ -89,7 +89,8 @@ For example, there are HTTP server which requires doing some logic (send mail, e
         
         	// add some task to background task queue
         	// If a task requires some logic which not needs for client You can move this logic to background.
-        	tq.Enqueue(NewCustomTask(request.URL.Query().Encode()))
+        	backgroundTask := NewCustomTask(request.URL.Query().Encode())
+            tq.Enqueue(backgroundTask)
         }
         ```
         

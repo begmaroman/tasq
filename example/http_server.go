@@ -48,5 +48,6 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 
 	// add some task to background task queue
 	// If a task requires some logic which not needs for client You can move this logic to background.
-	tq.Enqueue(NewCustomTask(request.URL.Query().Encode()))
+	backgroundTask := NewCustomTask(request.URL.Query().Encode())
+	tq.Enqueue(backgroundTask)
 }
