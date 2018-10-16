@@ -33,8 +33,8 @@ type TasQ struct {
 	tasksMaxRetry int
 	workersCount  int
 
-	TaskDone   func(Task)
-	TaskFailed func(Task, error)
+	TaskDone   func(int64)
+	TaskFailed func(int64, error)
 }
 
 func New() *TasQ {
@@ -91,17 +91,16 @@ func (t *TasQ) process(it *iTask) {
 		if err := it.task.Do(); err != nil {
 			if err == ErrRetryTask {
 				try++
-			}
-
-			if try < t.tasksMaxRetry {
-				continue
-			} else {
-				err = ErrMaxRetry
+				if try < t.tasksMaxRetry {
+					continue
+				} else {
+					err = ErrMaxRetry
+				}
 			}
 
 			it.state = Failed
 			if t.TaskFailed != nil {
-				t.TaskFailed(it.task, err)
+				t.TaskFailed(it.id, err)
 			}
 
 			break
@@ -109,7 +108,7 @@ func (t *TasQ) process(it *iTask) {
 
 		it.state = Done
 		if t.TaskDone != nil {
-			t.TaskDone(it.task)
+			t.TaskDone(it.id)
 		}
 
 		break

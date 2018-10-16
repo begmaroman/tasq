@@ -25,5 +25,5 @@ func main() {
 		log.Print("added task with id:", tq.Enqueue(&printer{}))
 	}
 	tq.Close()
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 10)
 }
