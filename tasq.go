@@ -16,10 +16,6 @@ var (
 	WorkersPollSize = 10
 	// Count of retry when task processing is fail
 	TaskMaxRetry = 3
-	// Size of tasks channel
-	SizeQ = 10
-	// Size of pending queue
-	PendingSizeQ = 10
 )
 
 type Task interface {
@@ -41,8 +37,8 @@ func New() *TasQ {
 	return &TasQ{
 		workersCount:  WorkersPollSize,
 		tasksMaxRetry: TaskMaxRetry,
-		queue:         make(chan *iTask, SizeQ),
-		pending:       newPendingQ(PendingSizeQ),
+		queue:         make(chan *iTask, WorkersPollSize),
+		pending:       newPendingQ(WorkersPollSize),
 	}
 }
 
