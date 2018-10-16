@@ -26,7 +26,7 @@ func (c *CustomTask) Do() error {
 	// imitation some huge logic
 	time.Sleep(time.Second)
 
-	log.Println("request query parameters: ", c.logData)
+	log.Println("request query parameters:", c.logData)
 	return nil
 }
 
@@ -44,6 +44,8 @@ func main() {
 }
 
 func handler(writer http.ResponseWriter, request *http.Request) {
+	writer.Write([]byte("add logging to background"))
+
 	// add some task to background task queue
 	// If a task requires some logic which not needs for client You can move this logic to background.
 	tq.Enqueue(NewCustomTask(request.URL.Query().Encode()))
