@@ -92,6 +92,8 @@ For example, there are HTTP server which requires doing some logic (send mail, e
         	tq.Enqueue(NewCustomTask(request.URL.Query().Encode()))
         }
         ```
+        
+    - Request *http://localhost:7575/tasq?parameter=value* and check server logs.
 
 ## Benchmarks:
 
