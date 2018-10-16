@@ -2,24 +2,24 @@ package tasq
 
 import "sync"
 
-type blockingQ struct {
+type pendingQ struct {
 	sync.Mutex
 	queue []*iTask
 }
 
-func newBlockingQ(size int) *blockingQ {
-	return &blockingQ{
+func newPendingQ(size int) *pendingQ {
+	return &pendingQ{
 		queue: make([]*iTask, 0, size),
 	}
 }
 
-func (q *blockingQ) enq(it *iTask) {
+func (q *pendingQ) enq(it *iTask) {
 	q.Lock()
 	q.queue = append(q.queue, it)
 	q.Unlock()
 }
 
-func (q *blockingQ) deq() *iTask {
+func (q *pendingQ) deq() *iTask {
 	q.Lock()
 	defer q.Unlock()
 

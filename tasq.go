@@ -1,7 +1,6 @@
 package tasq
 
 import (
-	"sync"
 	"sync/atomic"
 )
 
@@ -28,11 +27,9 @@ type Task interface {
 }
 
 type TasQ struct {
-	lock sync.Mutex
-
 	lastInc       int64
 	queue         chan *iTask
-	pending       *blockingQ
+	pending       *pendingQ
 	tasksMaxRetry int
 	workersCount  int
 
@@ -45,7 +42,7 @@ func New() *TasQ {
 		workersCount:  WorkersPollSize,
 		tasksMaxRetry: TaskMaxRetry,
 		queue:         make(chan *iTask, SizeQ),
-		pending:       newBlockingQ(PendingSizeQ),
+		pending:       newPendingQ(PendingSizeQ),
 	}
 }
 
