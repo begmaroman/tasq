@@ -4,7 +4,8 @@ TasQ is a background task worker with high performance.
 ## Cases for using:
 You can use **TasQ** if your application requires some background operations. If a task requires some logic which not needs for client You can move this logic to background.
 
-For example, there are HTTP server which requires doing some logic (send mail, exec DB queries etc.) after handling of HTTP request. In this case you may use **TasQ**.
+For example, there is HTTP server which requires doing some logic (send mail, exec DB queries etc.) after handling of HTTP request. 
+In this case, you may use **TasQ**.
 
 ## How it works
 0. Task (go type) must implement *tasq.Task* interface which has one method *Do*. Signature of *Do* func: `func Do() error`
