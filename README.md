@@ -1,6 +1,11 @@
 # TasQ 
 TasQ is a background task worker with high performance.
 
+## Cases for using:
+You can use **TasQ** if your application requires some background operations. If a task requires some logic which not needs for client You can move this logic to background.
+
+For example, there are HTTP server which requires doing some logic (send mail, exec DB queries etc.) after handling of HTTP request. In this case you may use **TasQ**.
+
 ## How it works
 0. Task (go type) must implement *tasq.Task* interface which has one method *Do*. Signature of *Do* func: `func Do() error`
 1. Configure **TasQ** for your application using the following settings:
@@ -17,11 +22,6 @@ TasQ is a background task worker with high performance.
 4. Run **TasQ**: `tq.Start()`;
 5. Use `tq.Enqueue(task)` for adding a task to background queue;
 6. Use `tq.Close()` for stopping workers and for closing channel;
-
-## Cases for using:
-You can use **TasQ** if your application requires some background operations. If a task requires some logic which not needs for client You can move this logic to background.
-
-For example, there are HTTP server which requires doing some logic (send mail, exec DB queries etc.) after handling of HTTP request. In this case you may use **TasQ**.
 
 ## Example:
 
