@@ -13,9 +13,9 @@ const (
 
 var (
 	// Count of workers (go-routines) which will be run
-	WorkersPollSize = 10
+	WorkersCount = 10
 	// Count of retry when task processing is fail
-	TaskMaxRetry = 3
+	MaxRetry = 3
 )
 
 type Task interface {
@@ -35,10 +35,10 @@ type TasQ struct {
 
 func New() *TasQ {
 	return &TasQ{
-		workersCount:  WorkersPollSize,
-		tasksMaxRetry: TaskMaxRetry,
-		queue:         make(chan *iTask, WorkersPollSize),
-		pending:       newPendingQ(WorkersPollSize),
+		workersCount:  WorkersCount,
+		tasksMaxRetry: MaxRetry,
+		queue:         make(chan *iTask, WorkersCount),
+		pending:       newPendingQ(WorkersCount),
 	}
 }
 
