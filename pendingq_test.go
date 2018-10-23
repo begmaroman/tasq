@@ -15,7 +15,7 @@ func TestPendingQ_CheckQueueCap(t *testing.T) {
 }
 
 func TestPendingQ_Enq(t *testing.T) {
-	ts := newITask(1, 2, nil)
+	ts := newTaskProcess(1, 2, nil)
 	p := newPendingQ(10)
 	p.enq(ts)
 
@@ -29,7 +29,7 @@ func TestPendingQ_Enq(t *testing.T) {
 }
 
 func TestPendingQ_Deq(t *testing.T) {
-	ts := newITask(1, 2, nil)
+	ts := newTaskProcess(1, 2, nil)
 	p := newPendingQ(10)
 	p.enq(ts)
 	dTs := p.deq()
