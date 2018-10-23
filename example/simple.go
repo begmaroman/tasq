@@ -18,10 +18,14 @@ func (p *printer) Do() error {
 	return nil
 }
 
+func (p *printer) Done() {
+	fmt.Println("done function")
+}
+
 func main() {
 	tq := tasq.New()
 	tq.Start()
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 5; i++ {
 		log.Print("added task with id:", tq.Enqueue(&printer{}))
 	}
 	tq.Close()

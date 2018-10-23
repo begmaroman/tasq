@@ -4,6 +4,7 @@ import (
 	"sync/atomic"
 )
 
+// Process statuses
 const (
 	Pending byte = iota
 	InProgress
@@ -18,16 +19,12 @@ var (
 	MaxRetry = 3
 )
 
-type Task interface {
-	Do() error
-}
-
 type TasQ struct {
-	lastInc       int64
-	queue         chan *iTask
-	pending       *pendingQ
-	tasksMaxRetry int
-	workersCount  int
+	lastID       int64
+	queue        chan *taskProcess
+	pending      *pendingQ
+	maxRetry     int
+	workersCount int
 
 	TaskDone   func(int64)
 	TaskFailed func(int64, error)
@@ -35,10 +32,10 @@ type TasQ struct {
 
 func New() *TasQ {
 	return &TasQ{
-		workersCount:  WorkersCount,
-		tasksMaxRetry: MaxRetry,
-		queue:         make(chan *iTask, WorkersCount),
-		pending:       newPendingQ(WorkersCount),
+		workersCount: WorkersCount,
+		maxRetry:     MaxRetry,
+		queue:        make(chan *taskProcess, WorkersCount),
+		pending:      newPendingQ(WorkersCount),
 	}
 }
 
@@ -47,7 +44,7 @@ func (t *TasQ) Enqueue(task Task) int64 {
 		return -1
 	}
 
-	it := newITask(atomic.AddInt64(&t.lastInc, 1), Pending, task)
+	it := newTaskProcess(atomic.AddInt64(&t.lastID, 1), Pending, task)
 	select {
 	case t.queue <- it:
 		// successfully sent to the workers
@@ -80,31 +77,35 @@ func (t *TasQ) Close() {
 	close(t.queue)
 }
 
-func (t *TasQ) process(it *iTask) {
-	it.state = InProgress
+func (t *TasQ) process(tp *taskProcess) {
+	if tDone, ok := tp.task.(TaskDone); ok {
+		defer tDone.Done()
+	}
+
+	tp.state = InProgress
 	var try int
 	for {
-		if err := it.task.Do(); err != nil {
+		if err := tp.task.Do(); err != nil {
 			if err == ErrRetryTask {
 				try++
-				if try < t.tasksMaxRetry {
+				if try < t.maxRetry {
 					continue
 				} else {
 					err = ErrMaxRetry
 				}
 			}
 
-			it.state = Failed
+			tp.state = Failed
 			if t.TaskFailed != nil {
-				t.TaskFailed(it.id, err)
+				t.TaskFailed(tp.id, err)
 			}
 
 			break
 		}
 
-		it.state = Done
+		tp.state = Done
 		if t.TaskDone != nil {
-			t.TaskDone(it.id)
+			t.TaskDone(tp.id)
 		}
 
 		break

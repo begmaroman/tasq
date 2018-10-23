@@ -4,22 +4,22 @@ import "sync"
 
 type pendingQ struct {
 	sync.Mutex
-	queue []*iTask
+	queue []*taskProcess
 }
 
 func newPendingQ(size int) *pendingQ {
 	return &pendingQ{
-		queue: make([]*iTask, 0, size),
+		queue: make([]*taskProcess, 0, size),
 	}
 }
 
-func (q *pendingQ) enq(it *iTask) {
+func (q *pendingQ) enq(it *taskProcess) {
 	q.Lock()
 	q.queue = append(q.queue, it)
 	q.Unlock()
 }
 
-func (q *pendingQ) deq() *iTask {
+func (q *pendingQ) deq() *taskProcess {
 	q.Lock()
 	defer q.Unlock()
 

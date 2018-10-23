@@ -90,8 +90,8 @@ func TestTasQ_CheckMaxRetry(t *testing.T) {
 
 	wg.Wait()
 
-	if tsk.execCount != TaskMaxRetry {
-		t.Errorf("wrong retry count: expected %d given %d", TaskMaxRetry, tsk.execCount)
+	if tsk.execCount != MaxRetry {
+		t.Errorf("wrong retry count: expected %d given %d", MaxRetry, tsk.execCount)
 	}
 }
 
